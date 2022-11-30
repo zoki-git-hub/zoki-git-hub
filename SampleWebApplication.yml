@@ -1,0 +1,26 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - checkout: Zoran
+  - task: NuGetToolInstaller@1
+  - task: NuGetCommand@2
+    displayName: Restoring Nuget Packages
+    inputs:
+      command: 'restore'
+      restoreSolution: SampleWebApplication.sl
+      feedsToUse: 'select'
+  - task: VSBuild@1
+    displayName: Build Packages with msbuild
+    inputs:
+      solution: SampleWebApplication.sln
+      msbuildArgs: '/p:DeployOnBuild=true /p:WebPublishMethod=Package /p:PackageAsSingleFile=true /p:SkipInvalidConfigurations=true /p:IncludeSetAclProviderOnDestination=False /p:PackageLocation="$(build.artifactstagingdirectory)\\" /p:TransformWebConfigEnabled=False /p:AutoParameterizationWebConfigConnectionStrings=False'
+      
